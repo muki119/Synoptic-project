@@ -7,16 +7,25 @@
         <script src="javascript/index.js" defer></script>
         <link href="stylesheets/index.css" rel="stylesheet">
         <script src="https://cdn.socket.io/4.7.5/socket.io.min.js" integrity="sha384-2huaZvOR9iDzHqslqwpR87isEmrfxqyWOF7hr7BY6KG0+hVKLoEXMPUJw3ynWuhO" crossorigin="anonymous"></script>
+        <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     </head>
     <body>
-        <table>
+        <table id="stationTable">
             <tr>
-              <th>Station</th>
+              <th>Water pump station</th>
               <th>Quality</th>
             </tr>
-            <tr>
+            <tr data-station="A">
               <td>A</td>
-              <td>Poor</td>
+              <td id="Quality">Poor</td>
+            </tr>
+            <tr>
+                <td>B</td>
+                <td>Poor</td>
+            </tr>
+            <tr>
+                <td>C</td>
+                <td>Poor</td>
             </tr>
         </table>
     </body>

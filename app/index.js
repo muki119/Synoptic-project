@@ -16,7 +16,13 @@ const io = new Server(3000,{
 })
 
 io.on("connection", (socket) => {
-    console.log(socket)
+    socket.on('newStation',(station,quality)=>{
+        console.log(station,quality)
+        socket.broadcast.emit("newStation",station.toUpperCase(),quality)
+    })
+    socket.on("qualityChange",(station,quality)=>{
+        socket.broadcast.emit("qualityChange",station.toUpperCase(),quality)
+    })
 })
 app.use(express.static(path.join(__dirname,"public")))
 app.use(bodyParser.json())
