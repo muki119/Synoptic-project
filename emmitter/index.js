@@ -8,5 +8,9 @@ var quality = process.argv[3]
 // })
 socket.emit("newStation",station,quality)
 setInterval(()=>{
-    socket.emit("qualityChange",station,quality)
+    socket.emit("qualityChange",quality)
 }, 2000);
+
+socket.io.on("reconnect", (attempt) => {
+    socket.emit("newStation",station,quality)
+});

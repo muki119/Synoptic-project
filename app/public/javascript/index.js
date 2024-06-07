@@ -30,7 +30,10 @@ socket.on('newStation',(station,quality)=>{ // when a newstation comes in
 socket.on("qualityChange",(station,quality)=>{ // on station qualioty change
     changeQuality(station,quality) // change the quality of station
 })
-
+socket.on("stationDisconnect",(stationID)=>{
+    console.log(stationID)
+    changeQuality(stationID,"Disconnected")
+})
 
 // addTableRow("D","Poor") // tests
 // changeQuality("D","Great")

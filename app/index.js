@@ -17,11 +17,18 @@ const io = new Server(3000,{ // creates socket server
 
 io.on("connection", (socket) => {
     socket.on('newStation',(station,quality)=>{ // when theres a new station 
-        console.log(station,quality)
-        socket.broadcast.emit("newStation",station.toUpperCase(),quality) // broadcast to clientside
+        //console.log(station,quality)
+        socket.stationID = station.toUpperCase()
+        console.log(socket.stationID)
+        socket.broadcast.emit("newStation",socket.stationID,quality) // broadcast to clientside
     })
-    socket.on("qualityChange",(station,quality)=>{ // when theres a change of quality
-        socket.broadcast.emit("qualityChange",station.toUpperCase(),quality) // broadcast to client side 
+    socket.on("qualityChange",(quality)=>{ // when theres a change of quality
+        socket.broadcast.emit("qualityChange",socket.stationID,quality) // broadcast to client side 
+    })
+    socket.on("disconnect",()=>{
+        var stationID = socket.stationID
+        console.log("disconnected" + stationID)
+        socket.broadcast.emit("stationDisconnect",stationID)
     })
 })
 app.use(express.static(path.join(__dirname,"public")))
