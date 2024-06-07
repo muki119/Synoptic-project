@@ -7,7 +7,7 @@ const port = 8080
 const { Server } = require("socket.io");
 const fs = require("fs")
 
-const io = new Server(3000,{
+const io = new Server(3000,{ // creates socket server 
     cors:{
         origin: "http://localhost:8080",
         credentials: true
@@ -16,12 +16,12 @@ const io = new Server(3000,{
 })
 
 io.on("connection", (socket) => {
-    socket.on('newStation',(station,quality)=>{
+    socket.on('newStation',(station,quality)=>{ // when theres a new station 
         console.log(station,quality)
-        socket.broadcast.emit("newStation",station.toUpperCase(),quality)
+        socket.broadcast.emit("newStation",station.toUpperCase(),quality) // broadcast to clientside
     })
-    socket.on("qualityChange",(station,quality)=>{
-        socket.broadcast.emit("qualityChange",station.toUpperCase(),quality)
+    socket.on("qualityChange",(station,quality)=>{ // when theres a change of quality
+        socket.broadcast.emit("qualityChange",station.toUpperCase(),quality) // broadcast to client side 
     })
 })
 app.use(express.static(path.join(__dirname,"public")))
