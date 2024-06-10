@@ -11,6 +11,6 @@ setInterval(()=>{
     socket.emit("qualityChange",quality)
 }, 2000);
 
-socket.io.on("reconnect", (attempt) => {
-    socket.emit("newStation",station,quality)
+socket.io.on("reconnect", (attempt) => { // if server restarts
+    socket.emit("newStation",station,quality) // send=
 });
