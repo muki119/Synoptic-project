@@ -6,6 +6,9 @@ const app = express()
 const port = 8080
 const { Server } = require("socket.io");
 const fs = require("fs")
+const database = require('./database/database')()
+const stationSchema = require("./database/stationSchema")
+const stationReadingsModel = require("./database/stationRecords")
 
 const io = new Server(3000,{ // creates socket server 
     cors:{
@@ -16,25 +19,53 @@ const io = new Server(3000,{ // creates socket server
 })
 
 io.on("connection", (socket) => {
-    socket.on('newStation',(station,quality)=>{ // when theres a new station 
+    socket.on('newStation',async(station,quality)=>{ // when theres a new station 
+        try {
+            const e = await stationSchema.exists({station_id:`${station}`})
+            if (!e){
+                const newstation  = new stationSchema({
+                    station_id:station
+                })
+                newstation.save()
+                const newReading = new stationReadingsModel({
+                    station_id:station,
+                    reading:quality
+                })
+                newReading.save()
+            }
+        } catch (error) {
+            console.log(error)
+        }
         socket.stationID = station.toUpperCase()
         socket.broadcast.emit("newStation",socket.stationID,quality) // broadcast to clientside
     })
-    socket.on("qualityChange",(quality)=>{ // when theres a change of quality
+    socket.on("qualityChange",(station,quality)=>{ // when theres a change of quality
+        try {
+            const newReading = new stationReadingsModel({
+                station_id:station,
+                reading:quality
+            })
+            newReading.save()
+        } catch (error) {
+            console.log(error)
+        }
         socket.broadcast.emit("qualityChange",socket.stationID,quality) // broadcast to client side 
     })
     socket.on("disconnect",()=>{
-        var stationID = socket.stationID
-        console.log("disconnected" + stationID)
-        socket.broadcast.emit("stationDisconnect",stationID)
+        var stationID = socket.stationID // if its a station
+        if (stationID){
+            socket.broadcast.emit("stationDisconnect",stationID)
+        }
+        
     })
 })
 app.use(express.static(path.join(__dirname,"public")))
 app.use(bodyParser.json())
 app.set('view engine', 'ejs')
 
-app.get("/",(req,res)=>{ 
-    res.render("pages/index/index")
+app.get("/",async(req,res)=>{ 
+    const stations = await stationSchema.find({},"station_id")
+    res.render("pages/index/index",{"stations":stations})
 })
 
 app.listen(port,async(err)=>{

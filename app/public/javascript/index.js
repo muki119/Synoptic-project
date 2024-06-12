@@ -1,6 +1,6 @@
 const socket = io('http://localhost:3000');
 
-function addTableRow(station,quality){ // new station 
+function addTableRow(station,quality){ // 
     if ($(`tr[data-station="${station}"]`).length != 0 ){
         changeQuality(station,quality)
         return

@@ -12,7 +12,7 @@
     <body>
         <div class="topBar">
             <img id="logoImage"src="images/logo.png">
-            <a  target="_blank" class="buttons" href="#">Contact us</a>
+            <a  target="_blank" class="buttons" href="mailto:customerservice@aquaflow.com">Contact us</a>
             <a target="_blank" class="buttons" href="https://forms.office.com/e/ZKbzJE5JyU">Report A Bug</a>
         </div>
         <div class="stationMap">
@@ -27,7 +27,13 @@
                     </tr>
                 </thead>
                 <tbody>
-                    
+                    <% stations.forEach(e=>{ %>
+                        <tr data-station='<%=e.station_id%>' >
+                            <td><%=e.station_id%></td>
+                            <td id="Quality">disconnected</td>
+                            <td id="colourDisplay" class="disconnected"></td>
+                        </tr>
+                        <%});%>
                 </tbody>
             </table>
         </div>
