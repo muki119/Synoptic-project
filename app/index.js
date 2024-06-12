@@ -17,9 +17,7 @@ const io = new Server(3000,{ // creates socket server
 
 io.on("connection", (socket) => {
     socket.on('newStation',(station,quality)=>{ // when theres a new station 
-        //console.log(station,quality)
         socket.stationID = station.toUpperCase()
-        console.log(socket.stationID)
         socket.broadcast.emit("newStation",socket.stationID,quality) // broadcast to clientside
     })
     socket.on("qualityChange",(quality)=>{ // when theres a change of quality

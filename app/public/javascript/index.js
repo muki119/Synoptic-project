@@ -9,6 +9,7 @@ function addTableRow(station,quality){ // new station
              <tr data-station='${station}' >
                 <td>${station}</td>
                 <td id="Quality">${quality}</td>
+                <td id="colourDisplay" class="${quality}"></td>
             </tr>
     `
     $("#stationTable>tbody").append(elem)
@@ -21,6 +22,7 @@ function changeQuality(station,quality){
     }else{
         //console.log($(`tr[data-station='${station}']>td#Quality`).text())
         $(`tr[data-station='${station}']>td#Quality`).text(quality);
+        $(`tr[data-station='${station}']>td#colourDisplay`).attr('class', `${quality}`);
     }
 }
 
@@ -28,10 +30,12 @@ socket.on('newStation',(station,quality)=>{ // when a newstation comes in
     addTableRow(station,quality) //add to table
 })
 socket.on("qualityChange",(station,quality)=>{ // on station qualioty change
+    if (station == null){
+        return
+    }
     changeQuality(station,quality) // change the quality of station
 })
 socket.on("stationDisconnect",(stationID)=>{
-    console.log(stationID)
     changeQuality(stationID,"Disconnected")
 })
 
