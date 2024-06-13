@@ -8,7 +8,8 @@ td, th {
     border: 1px solid #dddddd;
     text-align: left;
     padding: 8px;
-    }
+    text-transform:capitalize;
+}
 
 tr:nth-child(even) {
     background-color: #dddddd;

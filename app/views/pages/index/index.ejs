@@ -24,6 +24,7 @@
                         <th>Water pump station</th>
                         <th>Quality</th>
                         <th></th>
+                        <th>Last Updated</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -32,6 +33,7 @@
                             <td><%=e.station_id%></td>
                             <td id="Quality">disconnected</td>
                             <td id="colourDisplay" class="disconnected"></td>
+                            <td id="lastOnline"><%=e.last_Online.toUTCString()%></td>
                         </tr>
                         <%});%>
                 </tbody>

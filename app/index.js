@@ -23,53 +23,67 @@ io.on("connection", (socket) => {
         try {
             const e = await stationSchema.exists({station_id:`${station}`})
             if (!e){
-                const newstation  = new stationSchema({
+                const newstation  = new stationSchema({ // creates a new station document
                     station_id:station
                 })
-                newstation.save()
-                const newReading = new stationReadingsModel({
+                newstation.save() // saves it to the database
+                const newReading = new stationReadingsModel({ // creates a new readings document
                     station_id:station,
                     reading:quality
                 })
-                newReading.save()
+                
+                newReading.save() // daves it to the collection
             }
         } catch (error) {
             console.log(error)
         }
+        const currentTime = new Date().toISOString()
         socket.stationID = station.toUpperCase()
-        socket.broadcast.emit("newStation",socket.stationID,quality) // broadcast to clientside
+        socket.broadcast.emit("newStation",socket.stationID,quality,currentTime) // broadcast to clientside
     })
-    socket.on("qualityChange",(station,quality)=>{ // when theres a change of quality
+    socket.on("qualityChange",async (station,quality)=>{ // when theres a change of quality
+        let currentTime;
         try {
-            const newReading = new stationReadingsModel({
+            const newReading = new stationReadingsModel({ // create a new station readings document with the new reading 
                 station_id:station,
                 reading:quality
             })
-            newReading.save()
+            newReading.save() // save it to the sdatabase
+            currentTime = new Date().toISOString()
+            await stationSchema.findOneAndUpdate({station_id:station},{last_Online:currentTime}) // updates the last time the monitors sent a reading
         } catch (error) {
             console.log(error)
         }
-        socket.broadcast.emit("qualityChange",socket.stationID,quality) // broadcast to client side 
+        socket.broadcast.emit("qualityChange",socket.stationID,quality,currentTime) // broadcast information to the  client sockets 
     })
-    socket.on("disconnect",()=>{
-        var stationID = socket.stationID // if its a station
-        if (stationID){
-            socket.broadcast.emit("stationDisconnect",stationID)
+
+    socket.on("disconnect",()=>{  // if a socket has disconnected 
+        var stationID = socket.stationID // if its a station that has disconnected
+        if (stationID){ // and the socket is a stations
+            socket.broadcast.emit("stationDisconnect",stationID) // send a station disconnect event to the client side
         }
         
     })
 })
-app.use(express.static(path.join(__dirname,"public")))
+app.use(express.static(path.join(__dirname,"public"))) // sets a static files path the the public folder 
 app.use(bodyParser.json())
 app.set('view engine', 'ejs')
 
 app.get("/",async(req,res)=>{ 
-    const stations = await stationSchema.find({},"station_id")
-    res.render("pages/index/index",{"stations":stations})
+    try {
+        const stations = await stationSchema.find({}) // get all stations
+        console.log(stations)
+        res.render("pages/index/index",{"stations":stations}) // render page with station data
+    } catch (error) {
+        console.log(error)
+    }
+
 })
 
-app.listen(port,async(err)=>{
-    if (!err){
-        console.log(`listening on port ${port}`)
+app.listen(port,async(err)=>{ // listen on the port 
+    if (!err){  // if no error 
+        console.log(`listening on port ${port}`) // notify that the server is now listening
+    }else{
+        console.log(err)
     }
 })

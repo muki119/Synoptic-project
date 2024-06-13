@@ -2,7 +2,7 @@
 const mongo = require('mongoose')
 const {Schema} = require("mongoose")
 
-const stationSchema = Schema({
+const stationSchema = Schema({ // creates a new schema  for the stations
     station_id :{
         type:String,
         unique:true,
@@ -11,6 +11,7 @@ const stationSchema = Schema({
         type:Date,
         default:Date.now
     }
+    
 })
 
 const stationsModel = mongo.model("Stations",stationSchema)
