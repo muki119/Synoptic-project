@@ -20,12 +20,15 @@ function addTableRow(station,quality,currentTime){ //
 
 function changeQuality(station,quality,currentTime){
     var rowElement  = $(`tr[data-station="${station}"]`) 
+
     if (rowElement.length == 0){ // if the row dosent exist
         addTableRow(station,quality,currentTime) // create it 
     }else{ // otherwise 
         $(`tr[data-station='${station}']>td#Quality`).text(quality); // change the quality of the station 
         $(`tr[data-station='${station}']>td#colourDisplay`).attr('class', `${quality}`); // change the status color
-        $(`tr[data-station='${station}']>td#lastOnline`).text(new Date(currentTime).toUTCString());
+        if (currentTime){
+            $(`tr[data-station='${station}']>td#lastOnline`).text(new Date(currentTime).toUTCString());// set the last online to the new time
+        } 
     }
 }
 

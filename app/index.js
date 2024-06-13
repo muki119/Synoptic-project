@@ -23,10 +23,10 @@ io.on("connection", (socket) => {
         try {
             const e = await stationSchema.exists({station_id:`${station}`})
             if (!e){
-                const newstation  = new stationSchema({ // creates a new station document
+                const newStation  = new stationSchema({ // creates a new station document
                     station_id:station
                 })
-                newstation.save() // saves it to the database
+                newStation.save() // saves it to the database
                 const newReading = new stationReadingsModel({ // creates a new readings document
                     station_id:station,
                     reading:quality
@@ -50,7 +50,7 @@ io.on("connection", (socket) => {
             })
             newReading.save() // save it to the sdatabase
             currentTime = new Date().toISOString()
-            await stationSchema.findOneAndUpdate({station_id:station},{last_Online:currentTime}) // updates the last time the monitors sent a reading
+            await stationSchema.findOneAndUpdate({station_id:station},{last_Online:currentTime}) // updates the last time the sensors sent a reading
         } catch (error) {
             console.log(error)
         }
