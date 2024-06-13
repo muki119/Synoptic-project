@@ -72,7 +72,6 @@ app.set('view engine', 'ejs')
 app.get("/",async(req,res)=>{ 
     try {
         const stations = await stationSchema.find({}) // get all stations
-        console.log(stations)
         res.render("pages/index/index",{"stations":stations}) // render page with station data
     } catch (error) {
         console.log(error)
